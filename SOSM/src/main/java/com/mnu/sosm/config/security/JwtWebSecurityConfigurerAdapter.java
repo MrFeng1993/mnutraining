@@ -45,6 +45,7 @@ public class JwtWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
             "/swagger-ui/**",
             "/v2/api-docs",
             "/v3/api-docs",
+            "/user/search"
     };
 
 
@@ -60,6 +61,7 @@ public class JwtWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
                 .failureHandler(authenticationFailureHandler)//登录失败处理逻辑
                 .and()
                 .authorizeRequests()
+//                .antMatchers(PERMIT_RES_LIST).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and().logout()

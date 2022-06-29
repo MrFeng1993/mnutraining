@@ -64,7 +64,7 @@ public class SignInPasswordDecryptionFilter extends OncePerRequestFilter {
                 log.info("登录密码（解密前）="+queryStringValue);
                 // 解密操作 AES/ECB/PKCS5Padding
                 try {
-                    queryStringValue = AESUtils2.Decrypt(queryStringValue,SECRETKEY);
+//                    queryStringValue = AESUtils2.Decrypt(queryStringValue,SECRETKEY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
