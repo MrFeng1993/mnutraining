@@ -45,7 +45,8 @@ public class JwtWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
             "/swagger-ui/**",
             "/v2/api-docs",
             "/v3/api-docs",
-            "/user/search"
+            "/user/search",
+//            "/**"
     };
 
 
