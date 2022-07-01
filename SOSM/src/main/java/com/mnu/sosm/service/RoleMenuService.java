@@ -52,7 +52,8 @@ public class RoleMenuService {
             List<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
             List<Menu> menus = menuDao.findByIdIn(menuIds);
             if (menus != null && menus.size() > 0){
-                return menuDataHandler(menus);
+//                return menuDataHandler(menus);
+                return menus;
             }
         }
         return new JSONArray();

@@ -164,6 +164,7 @@ public class MyRoleController {
     }
 
 
+    @Transactional
     @RequestMapping(value = "setMenu",method = RequestMethod.POST)
     public JsonModel setMenu(@RequestBody MenuSettingDto menuSetting){
         try {
