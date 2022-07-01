@@ -45,8 +45,6 @@ public class JwtWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
             "/swagger-ui/**",
             "/v2/api-docs",
             "/v3/api-docs",
-            "/user/search",
-//            "/**"
     };
 
 
@@ -68,8 +66,8 @@ public class JwtWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
                 .and().logout()
 //                .logoutUrl("/logout")
                 .permitAll()//允许所有用户
-                .logoutSuccessHandler(logoutSuccessHandler).//登出成功处理逻辑
-                deleteCookies("JSESSIONID");//登出之后删除cookie
+                .logoutSuccessHandler(logoutSuccessHandler)//登出成功处理逻辑
+                .deleteCookies("JSESSIONID");//登出之后删除cookie
         http.csrf().disable();
     }
 

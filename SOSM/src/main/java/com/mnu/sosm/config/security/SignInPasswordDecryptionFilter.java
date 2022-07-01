@@ -1,6 +1,7 @@
 package com.mnu.sosm.config.security;
 
 import com.mnu.sosm.utils.AESUtils2;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,7 @@ import java.io.IOException;
 /**
  * 登录过程中对登录密码进行解密
  */
+@Data
 public class SignInPasswordDecryptionFilter extends OncePerRequestFilter {
 
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/login", HttpMethod.POST.name());
@@ -31,7 +33,7 @@ public class SignInPasswordDecryptionFilter extends OncePerRequestFilter {
     //AES密钥
     private static String SECRETKEY;
 
-    //静态属性注入方式
+    //静态属性输入方式
     @Value("${sosm.aes.secretkey}")
     public void initSecretkey(String key){
         SECRETKEY = key;
@@ -64,12 +66,13 @@ public class SignInPasswordDecryptionFilter extends OncePerRequestFilter {
                 log.info("登录密码（解密前）="+queryStringValue);
                 // 解密操作 AES/ECB/PKCS5Padding
                 try {
-//                    queryStringValue = AESUtils2.Decrypt(queryStringValue,SECRETKEY);
+
+                    //queryStringValue = AESUtils2.Decrypt(queryStringValue,SECRETKEY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                log.info("登录密码（解密后）="+queryStringValue);
             }
-
             return queryStringValue;
         }
 

@@ -11,4 +11,5 @@ public interface IMenuDao extends ICustomRepository<Menu,Long> {
 
     @Query(value = "from Menu where id in :ids")
     List<Menu> findByIdIn(List<Long> ids);
+
 }

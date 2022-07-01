@@ -23,4 +23,13 @@ public interface IMyRoleDao extends ICustomRepository<MyRole,Long> {
 
     MyRole findMyRoleByIdAndStatus(Long id, Byte status);
 
+    boolean existsByRoleNameAndStatus(String roleName, Byte status);
+    boolean existsByRoleCodeAndStatus(String roleCode, Byte status);
+
+
+    boolean existsByRoleNameAndStatusAndIdIsNot(String roleName, Byte status,Long id);
+    boolean existsByRoleCodeAndStatusAndIdIsNot(String roleCode, Byte status,Long id);
+
+
+
 }

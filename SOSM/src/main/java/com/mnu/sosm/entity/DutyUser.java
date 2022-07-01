@@ -9,22 +9,16 @@ import javax.persistence.*;
 
 @Entity
 @Data
-public class RoleMenu {
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "mnu_sosm_duty_user")
+public class DutyUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long roleId;
+    private Long dutyId;
 
-    private Long menuId;
-
-    public RoleMenu(){
-
-    }
-
-    public RoleMenu(Long roleId, Long menuId){
-        this.roleId = roleId;
-        this.menuId = menuId;
-    }
+    private Long userId;
 
 }

@@ -2,6 +2,7 @@ package com.mnu.sosm;
 
 import com.mnu.sosm.dao.*;
 import com.mnu.sosm.entity.*;
+import com.mnu.sosm.service.DutyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,8 @@ public class SosmStartInitHandler implements InitializingBean {
     @Resource
     private PasswordEncoder passwordEncoder;
 
+    @Resource
+    private DutyService dutyService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -47,6 +50,7 @@ public class SosmStartInitHandler implements InitializingBean {
 
             initSysDefaultMenu();
 
+            dutyService.initDutyInfo();
 
             log.info("系统初始化完成");
 
@@ -103,11 +107,11 @@ public class SosmStartInitHandler implements InitializingBean {
             Long super_role_id = super_admin.getId();
             menus = new ArrayList<>();
             Date now = new Date();
-            Menu menu1 = new Menu(null,"权限管理","authority",null,0l,now);
-            Menu menu2 = new Menu(null,"角色管理","authority/role",null,1l,now);
-            Menu menu3 = new Menu(null,"用户管理","authority/usser",null,1l,now);
-            Menu menu4 = new Menu(null,"排班管理","duty",null,0l,now);
-            Menu menu5 = new Menu(null,"任务管理","task",null,0l,now);
+            Menu menu1 = new Menu(null,"权限管理","authority",null,0l,now,null);
+            Menu menu2 = new Menu(null,"角色管理","/role",null,1l,now,null);
+            Menu menu3 = new Menu(null,"用户管理","/user",null,1l,now,null);
+            Menu menu4 = new Menu(null,"排班管理","/duty",null,0l,now,null);
+            Menu menu5 = new Menu(null,"任务管理","/task",null,0l,now,null);
             menus.add(menu1);
             menus.add(menu2);
             menus.add(menu3);

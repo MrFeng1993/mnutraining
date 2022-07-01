@@ -1,15 +1,23 @@
 package com.mnu.sosm.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.mnu.sosm.dao.IMyRoleDao;
+import com.mnu.sosm.dto.MenuSettingDto;
+import com.mnu.sosm.entity.Menu;
 import com.mnu.sosm.entity.MyRole;
+import com.mnu.sosm.service.MyUserService;
+import com.mnu.sosm.service.RoleMenuService;
 import com.mnu.sosm.utils.JsonModel;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.ManyToAny;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +30,11 @@ public class MyRoleController {
     @Resource
     private IMyRoleDao iMyRoleDao;
 
+    @Resource
+    private RoleMenuService roleMenuService;
+
+    @Resource
+    private MyUserService userService;
 
 
     /**
@@ -33,14 +46,27 @@ public class MyRoleController {
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     public JsonModel update(@RequestBody MyRole role){
         if (role .getId() == null) {//新增
-            boolean e = iMyRoleDao.existsByRoleCode(role.getRoleCode());
-            if (e){
+            boolean ec = iMyRoleDao.existsByRoleCodeAndStatus(role.getRoleCode(),(byte)1);
+            if (ec){
                 return new JsonModel(false,"roleCode重复",role);
+            }
+            boolean en = iMyRoleDao.existsByRoleNameAndStatus(role.getRoleName(),(byte)1);
+            if (en){
+                return new JsonModel(false,"roleName重复",role);
             }
             role.setCreateTime(new Date());
             role.setStatus((byte) 1);
             role = iMyRoleDao.save(role);
         }else {//编辑
+
+            boolean ec = iMyRoleDao.existsByRoleCodeAndStatusAndIdIsNot(role.getRoleCode(),(byte)1,role.getId());
+            if (ec){
+                return new JsonModel(false,"roleCode重复",role);
+            }
+            boolean en = iMyRoleDao.existsByRoleNameAndStatusAndIdIsNot(role.getRoleCode(),(byte)1,role.getId());
+            if (en){
+                return new JsonModel(false,"roleName重复",role);
+            }
             role = iMyRoleDao.update(role.getId(),role);
         }
         return new JsonModel(true,"操作成功",role);
@@ -51,12 +77,27 @@ public class MyRoleController {
      * @param id
      * @return
      */
+    @Transactional
     @RequestMapping(value = "/delete/{id}",method = RequestMethod.DELETE)
     public JsonModel delete(@PathVariable("id")Long id){
         try {
             Assert.notNull(id,"缺少必要参数");
-            iMyRoleDao.deleteById(id);
-            return new JsonModel(true,"操作成功");
+            boolean can = userService.canDeleteRole(id);
+            if (!can) {
+                boolean exist = iMyRoleDao.existsById(id);
+                if (!exist) {
+                    return new JsonModel(false,"角色不存在");
+                }
+                MyRole role = new MyRole();
+                role.setId(id);
+                role.setStatus((byte) -1);
+                iMyRoleDao.update(id,role);
+                return new JsonModel(true,"操作成功");
+
+            }else {
+                return new JsonModel(false,"存在绑定用户不能删除");
+            }
+
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return new JsonModel(false,e.getMessage());
@@ -108,6 +149,35 @@ public class MyRoleController {
 
     }
 
+    @RequestMapping(value = "/getMenu/{id}", method = RequestMethod.GET)
+    public JsonModel getMenu(@PathVariable("id") Long id){
+        try {
+            Assert.notNull(id,"缺少必要参数");
+            Object ret = roleMenuService.getMenuByRoleId(id);
+
+            return new JsonModel(true,"操作成功",ret);
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return new JsonModel(false,e.getMessage());
+        }
+    }
 
 
+    @RequestMapping(value = "setMenu",method = RequestMethod.POST)
+    public JsonModel setMenu(@RequestBody MenuSettingDto menuSetting){
+        try {
+            Assert.isTrue(menuSetting != null
+                    && menuSetting.getRoleId() !=null
+                    && menuSetting.getMenuIds() !=null
+                    && menuSetting.getMenuIds().size() > 0,"参数错误");
+            roleMenuService.menuSetting(menuSetting);
+            return new JsonModel(true,"操作成功");
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return new JsonModel(false,e.getMessage());
+        }
+
+
+    }
 }
