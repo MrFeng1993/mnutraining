@@ -72,13 +72,24 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
                 modelObj.put("roleCode",role.getRoleCode());
 
             }
+            MyRole myRole = iMyRoleDao.findOne(user.getRoleId());
             List<RoleMenu> roleMenus = iRoleMenuDao.findByRoleId(user.getRoleId());
+
             if (roleMenus != null && roleMenus.size() > 0){
                 List<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
-                List<Menu> menus = iMenuDao.findByIdIn(menuIds);
-                JSONArray array = roleMenuService.menuDataHandler(menus);
-                session.setAttribute("menus",array );
-                modelObj.put("menus", array);
+
+                //超级管理员默认返回全部菜单
+                if ("super_admin".equalsIgnoreCase(myRole.getRoleCode())){
+                    List<Menu> menus = iMenuDao.findAll();
+                    session.setAttribute("menus",menus );
+                    modelObj.put("menus", menus);
+
+                }else {
+                    List<Menu> menus = iMenuDao.findByIdIn(menuIds);
+                    JSONArray array = roleMenuService.menuDataHandler(menus);
+                    session.setAttribute("menus",array );
+                    modelObj.put("menus", array);
+                }
             }
         }
 

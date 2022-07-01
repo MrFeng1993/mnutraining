@@ -71,8 +71,8 @@ public class SosmStartInitHandler implements InitializingBean {
             super_admin.setCreateTime(new Date());
             super_admin.setRoleCode("super_admin");
             super_admin.setStatus((byte)1);
-            super_admin.setRoleName("超级管理员");
-            super_admin.setRoledesc("乱七八糟");
+            super_admin.setRoleName("jaychou");
+            super_admin.setRoledesc("周董要发专辑了，准备过年了");
             super_admin = iMyRoleDao.save(super_admin);
         }
 
@@ -80,12 +80,12 @@ public class SosmStartInitHandler implements InitializingBean {
         if (sys_user == null) {
             log.info("初始化超级管理员用户");
             sys_user = new MyUser();
-            sys_user.setDepartment("总裁办");
+            sys_user.setDepartment("杰威尔");
             sys_user.setRoleId(super_admin.getId());
             sys_user.setPassword(passwordEncoder.encode("123456"));
             sys_user.setStatus((byte)1);
             sys_user.setCreateTime(new Date());
-            sys_user.setUserName("admin");
+            sys_user.setUserName("jaychou");
             sys_user.setAccount("admin");
             iMyUserDao.save(sys_user);
         }
@@ -107,7 +107,7 @@ public class SosmStartInitHandler implements InitializingBean {
             Long super_role_id = super_admin.getId();
             menus = new ArrayList<>();
             Date now = new Date();
-            Menu menu1 = new Menu(null,"权限管理","authority",null,0l,now,null);
+            Menu menu1 = new Menu(null,"权限管理","",null,0l,now,null);
             Menu menu2 = new Menu(null,"角色管理","/role",null,1l,now,null);
             Menu menu3 = new Menu(null,"用户管理","/user",null,1l,now,null);
             Menu menu4 = new Menu(null,"排班管理","/duty",null,0l,now,null);
